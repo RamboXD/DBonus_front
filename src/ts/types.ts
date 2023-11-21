@@ -93,6 +93,15 @@ interface User {
   phoneNumber: string;
   profileDescription: string;
 }
+interface Userr {
+  Email: string;
+  Password: string;
+  GivenName: string;
+  Surname: string;
+  City: string;
+  PhoneNumber: string;
+  ProfileDescription: string;
+}
 
 interface Caregiver {
   photo: string;
@@ -122,7 +131,17 @@ export interface GetCaregiverData {
   Gender: string;
   CaregivingType: string;
   HourlyRate: number;
-  User: User;
+  User: Userr;
+}
+
+export interface GetCaregiverData2 {
+  caregiverUserId: string;
+  photo: string; // Base64 encoded image string
+  gender: string;
+  caregivingType: string;
+  hourlyRate: number;
+  givenName: string;
+  surname: string;
 }
 export interface loginType {
   email: string;

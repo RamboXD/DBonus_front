@@ -24,6 +24,18 @@ const Appointments: React.FC = () => {
 
     fetchAppointments();
   }, []);
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return "bg-yellow-100 border-yellow-200 text-yellow-800";
+      case "Confirmed":
+        return "bg-green-100 border-green-200 text-green-800";
+      case "Declined":
+        return "bg-red-100 border-red-200 text-red-800";
+      default:
+        return "";
+    }
+  };
 
   return (
     <Layout>
@@ -32,9 +44,10 @@ const Appointments: React.FC = () => {
         {appointments.map((appointment) => (
           <div
             key={appointment.AppointmentID}
-            className="border rounded p-4 mb-4"
+            className={`border rounded p-4 mb-4 ${getStatusStyle(
+              appointment.Status
+            )}`}
           >
-            {/* <p>Appointment ID: {appointment.AppointmentID}</p> */}
             <p>
               Caregiver Name: {appointment.Caregiver.User.GivenName}{" "}
               {appointment.Caregiver.User.Surname}

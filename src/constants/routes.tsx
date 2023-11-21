@@ -1,5 +1,6 @@
 import { Deals, Employees, Login, Organization, Registration } from "@/pages";
 import { Jobs } from "@/pages/Administration";
+import JobApplicants from "@/pages/Administration/Organizations/JobApplicants";
 import { IRoute, Role } from "@/ts/types";
 
 export const routes: IRoute[] = [
@@ -15,7 +16,7 @@ export const routes: IRoute[] = [
     path: "/administration/deals",
     component: <Deals />,
     roles: [Role.CLIENT, Role.ADMIN],
-    isPublic: true,
+    isPublic: false,
   },
   {
     name: "Organizations",
@@ -26,6 +27,13 @@ export const routes: IRoute[] = [
   },
   {
     name: "Organizations",
+    path: "/job-applicants/:id",
+    component: <JobApplicants />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: false,
+  },
+  {
+    name: "Applicants",
     path: "/administration/organizations/:id",
     component: <Organization />,
     roles: [Role.CLIENT, Role.ADMIN],

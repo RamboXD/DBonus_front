@@ -1,5 +1,5 @@
 import $api from "@/http";
-import { GetCaregiverData } from "@/ts/types";
+import { GetCaregiverData, GetCaregiverData2 } from "@/ts/types";
 
 interface organizationResponse {
   JobID: string;
@@ -11,6 +11,13 @@ interface organizationResponse {
 interface FormData {
   required_caregiving_type: string;
   other_requirements: string;
+}
+
+interface AppointmentFormData {
+  caregiverUserId: string;
+  appointmentDate: string;
+  appointmentTime: string;
+  workHour: number;
 }
 
 export interface AppointmentData {
@@ -62,6 +69,13 @@ export const createJob = (data: FormData) => {
   return $api.post<{ job: organizationResponse }>(`/member/createJob`, data);
 };
 
+export const createAppointment = (data: AppointmentFormData) => {
+  return $api.post<{ appointment: AppointmentData }>(
+    `/member/createAppointment`,
+    data
+  );
+};
+
 export const getAppointments = () => {
   return $api.get<{ appointments: AppointmentData[] }>(
     `/member/getAppointments`
@@ -70,4 +84,10 @@ export const getAppointments = () => {
 
 export const getCaregivers = () => {
   return $api.get<{ caregivers: GetCaregiverData[] }>(`/member/getCaregivers`);
+};
+
+export const getCaregiversForJob = (id: string | undefined) => {
+  return $api.get<{ caregivers: GetCaregiverData2[] }>(
+    `/member/job/applicants/${id}`
+  );
 };

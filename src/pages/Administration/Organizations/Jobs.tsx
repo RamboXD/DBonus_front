@@ -3,14 +3,14 @@ import { jobsTable } from "@/ts/types";
 import { useEffect, useState } from "react";
 import { getOrganizations } from "./api";
 import { createJob } from "./api/getOrganizations/getOrganizations";
-
+import { useNavigate } from "react-router-dom";
 const Jobs: React.FC = () => {
   const [jobs, setJobs] = useState<jobsTable[]>([]);
   const [formData, setFormData] = useState({
     required_caregiving_type: "",
     other_requirements: "",
   });
-
+  const navigate = useNavigate();
   useEffect(() => {
     const get = async () => {
       const result = await getOrganizations();
@@ -44,7 +44,7 @@ const Jobs: React.FC = () => {
   };
 
   const handleButtonClick = (jobID: string) => {
-    console.log(`Button clicked for JobID: ${jobID}`);
+    navigate(`/job-applicants/${jobID}`);
   };
 
   return (
@@ -88,7 +88,7 @@ const Jobs: React.FC = () => {
               onClick={() => handleButtonClick(job.JobID)}
               className="bg-blue-500 text-white px-4 py-2 mt-2"
             >
-              Click Me
+              Who Applied?
             </button>
           </div>
         ))}
