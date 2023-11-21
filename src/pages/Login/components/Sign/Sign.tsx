@@ -13,6 +13,7 @@ import { loginType } from "@/ts/types";
 import { loginSchema } from "@/zod/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 interface SignProps {
@@ -25,7 +26,7 @@ const Sign: React.FC<SignProps> = ({ handleSignUp }) => {
     shouldFocusError: false,
     resolver: zodResolver(loginSchema),
   });
-
+  const navigate = useNavigate();
   return (
     <Card className="relative">
       <CardHeader>
@@ -92,8 +93,11 @@ const Sign: React.FC<SignProps> = ({ handleSignUp }) => {
                     Login
                   </Button>
                   <div className="w-full justify-center flex flex-row mt-1 text-sm">
-                    <p className="text-left underline underline-offset-2 cursor-pointer">
-                      Back
+                    <p
+                      onClick={() => navigate("/registration")}
+                      className="text-left underline underline-offset-2 cursor-pointer"
+                    >
+                      Do not have an account? Click here!
                     </p>
                   </div>
                 </div>

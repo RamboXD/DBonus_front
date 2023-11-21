@@ -2,12 +2,14 @@ import logo from "@/assets/images/logo2.jpg";
 import { Button } from "@/components";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
 
 interface SignProps {
   setIsCaregiver: (value: number) => void;
 }
 
 const Sign: React.FC<SignProps> = ({ setIsCaregiver }) => {
+  const navigate = useNavigate();
   return (
     <Card className="relative">
       <CardHeader>
@@ -54,8 +56,11 @@ const Sign: React.FC<SignProps> = ({ setIsCaregiver }) => {
                   </div>
 
                   <div className="w-full justify-center flex flex-row mt-1 text-sm">
-                    <p className="text-left underline underline-offset-2 cursor-pointer">
-                      Are you already signed up?
+                    <p
+                      onClick={() => navigate("/login")}
+                      className="text-left underline underline-offset-2 cursor-pointer"
+                    >
+                      Already have an account? Click here!
                     </p>
                   </div>
                 </div>

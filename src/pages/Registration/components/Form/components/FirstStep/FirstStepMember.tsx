@@ -6,6 +6,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { PatternInput } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
 
 const FirstStepMember: React.FC = () => {
@@ -61,7 +62,13 @@ const FirstStepMember: React.FC = () => {
               <FormItem className="space-y-0">
                 <FormLabel>Phone number</FormLabel>
                 <FormControl>
-                  <Input placeholder="Phone number" {...field} />
+                  <PatternInput
+                    format="+7-(###)-###-####"
+                    mask="_"
+                    placeholder="Phone number"
+                    onValueChange={(value) => field.onChange(value.value)}
+                    type="tel"
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -78,9 +85,6 @@ const FirstStepMember: React.FC = () => {
               </FormItem>
             )}
           />
-        </div>
-        <div className="w-full flex flex-col gap-1">
-          {/* Profile Description Field */}
           <FormField
             control={form.control}
             name="profileDescription"
@@ -89,6 +93,37 @@ const FirstStepMember: React.FC = () => {
                 <FormLabel>Profile Description</FormLabel>
                 <FormControl>
                   <Input placeholder="Profile Description" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="w-full flex flex-col gap-1">
+          {/* Profile Description Field */}
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter email" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Enter password"
+                    {...field}
+                  />
                 </FormControl>
               </FormItem>
             )}
