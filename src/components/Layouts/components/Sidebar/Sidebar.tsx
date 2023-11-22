@@ -45,13 +45,13 @@ const Sidebar: React.FC = () => {
                   <span className="text-md font-medium">My jobs</span>
                 </Link>
                 <Link
-                  to="/administration/employees"
+                  to="/member/appointments"
                   className="w-full flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500"
                 >
                   <span className="text-md font-medium">My appointments</span>
                 </Link>
                 <Link
-                  to="/administration/deals"
+                  to="/member/caregivers"
                   className="w-full flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500"
                 >
                   <span className="text-md font-medium">Caregivers</span>
@@ -88,22 +88,22 @@ const Sidebar: React.FC = () => {
             <CollapsibleContent>
               <div className="flex flex-col pl-6">
                 <Link
-                  to="/administration/organizations"
+                  to="/caregiver/jobs"
+                  className="w-full flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500"
+                >
+                  <span className="text-md font-medium">Jobs</span>
+                </Link>
+                <Link
+                  to="/caregiver/applications"
                   className="w-full flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500"
                 >
                   <span className="text-md font-medium">My applications</span>
                 </Link>
                 <Link
-                  to="/administration/employees"
+                  to="/caregiver/appointments"
                   className="w-full flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500"
                 >
                   <span className="text-md font-medium">My appointments</span>
-                </Link>
-                <Link
-                  to="/administration/deals"
-                  className="w-full flex items-center space-x-2 hover:bg-gray-200 active:bg-gray-300 py-2 px-2 rounded-lg text-gray-500"
-                >
-                  <span className="text-md font-medium">Jobs</span>
                 </Link>
               </div>
             </CollapsibleContent>

@@ -9,6 +9,11 @@ const isAuthenticated = () => {
   return !!token;
 };
 
+const getRole = () => {
+  const role = localStorage.getItem("role");
+  return role;
+};
+
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -20,7 +25,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
 
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (isAuthenticated()) {
-    return <Navigate to="/member/jobs" replace />;
+    if (getRole() === "member") return <Navigate to="/member/jobs" replace />;
+    return <Navigate to="/caregiver/jobs" replace />;
   }
   return <>{children}</>;
 };

@@ -6,7 +6,7 @@ import {
 } from "../Organizations/api/getOrganizations/getOrganizations";
 import { GetCaregiverData } from "@/ts/types";
 
-const Deals: React.FC = () => {
+const Caregivers: React.FC = () => {
   const [caregivers, setCaregivers] = useState<GetCaregiverData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCaregiver, setSelectedCaregiver] = useState<string>("");
@@ -178,4 +178,4 @@ const Deals: React.FC = () => {
   );
 };
 
-export default Deals;
+export default Caregivers;

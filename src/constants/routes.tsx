@@ -1,6 +1,11 @@
-import { Deals, Employees, Login, Organization, Registration } from "@/pages";
+import { Login, Registration } from "@/pages";
 import { Jobs } from "@/pages/Administration";
+import Caregivers from "@/pages/Administration/Deals/Caregivers";
+import Appointments from "@/pages/Administration/Employees/Appointments";
 import JobApplicants from "@/pages/Administration/Organizations/JobApplicants";
+import ApplicationList from "@/pages/Caregiver/Applications/ApplicationList";
+import AppointmentList from "@/pages/Caregiver/Appointments/AppointmentList";
+import JobList from "@/pages/Caregiver/Jobs/JobList";
 import { IRoute, Role } from "@/ts/types";
 
 export const routes: IRoute[] = [
@@ -12,9 +17,9 @@ export const routes: IRoute[] = [
     isPublic: true,
   },
   {
-    name: "Deals",
-    path: "/administration/deals",
-    component: <Deals />,
+    name: "Caregivers",
+    path: "/member/caregivers",
+    component: <Caregivers />,
     roles: [Role.CLIENT, Role.ADMIN],
     isPublic: false,
   },
@@ -26,23 +31,37 @@ export const routes: IRoute[] = [
     isPublic: false,
   },
   {
-    name: "Organizations",
+    name: "Employees",
+    path: "/member/appointments",
+    component: <Appointments />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: false,
+  },
+  {
+    name: "Jobs",
+    path: "/caregiver/jobs",
+    component: <JobList />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: false,
+  },
+  {
+    name: "Applications",
+    path: "/caregiver/applications",
+    component: <ApplicationList />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: false,
+  },
+  {
+    name: "Appointments",
+    path: "/caregiver/appointments",
+    component: <AppointmentList />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: false,
+  },
+  {
+    name: "JobApplicants",
     path: "/job-applicants/:id",
     component: <JobApplicants />,
-    roles: [Role.CLIENT, Role.ADMIN],
-    isPublic: false,
-  },
-  {
-    name: "Applicants",
-    path: "/administration/organizations/:id",
-    component: <Organization />,
-    roles: [Role.CLIENT, Role.ADMIN],
-    isPublic: false,
-  },
-  {
-    name: "Employees",
-    path: "/administration/employees",
-    component: <Employees />,
     roles: [Role.CLIENT, Role.ADMIN],
     isPublic: false,
   },

@@ -1,6 +1,5 @@
-import Deals from "./Deals/Deals";
-import Employees from "./Employees/Employees";
-import Organization from "./Organization/Organization";
+import Deals from "./Deals/Caregivers";
+import Employees from "./Employees/Appointments";
 import Jobs from "./Organizations/Jobs";
 
-export { Deals, Employees, Organization, Jobs };
+export { Deals, Employees, Jobs };
