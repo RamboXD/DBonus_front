@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { ChevronDownIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -37,123 +33,78 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const data: Driver[] = [
+const data: FuelingPerson[] = [
   {
-    DriverID: "6de90cb4-3cd2-4000-a4e2-41c9f78aee5b",
-    UserID: "f5cf02d2-15f8-4628-b1d0-2b0181cdbd98",
-    Government: "gov-id-123",
+    FuelingPersonID: "25e58ded-58d2-48df-8118-8250072d268a",
+    UserID: "f7743878-d1a0-429f-a829-2a6d67e4a009",
+    Certification: "Certified Fuel Handler",
     Name: "John",
     Surname: "Doe",
-    MiddleName: "Allen",
-    Address: "123 Main Street",
-    Phone: "555-1234",
-    Email: "john.doe@example.com",
-    DrivingLicenseCode: "ABCD1234",
+    MiddleName: "L",
   },
   {
-    DriverID: "7fb90dc4-4cd2-4001-b5e2-41c9f78aee6c",
-    UserID: "g6cf02d2-25f8-4629-c2d0-3b0181cdbd99",
-    Government: "gov-id-456",
+    FuelingPersonID: "35g69fgh-68f2-49gf-9128-8250072d268b",
+    UserID: "g8843988-e2b0-529f-b839-3b6d67e5b2a1",
+    Certification: "Expert Fuel Technician",
     Name: "Alice",
-    Surname: "Smith",
-    MiddleName: "Beth",
-    Address: "456 Elm Street",
-    Phone: "555-5678",
-    Email: "alice.smith@example.com",
-    DrivingLicenseCode: "EFGH5678",
-  },
-  {
-    DriverID: "8gd91ed5-5ed3-5002-c6f3-52d9f89bfe7d",
-    UserID: "h7dg03e3-35g9-5730-d3e1-4c0292eceb00",
-    Government: "gov-id-789",
-    Name: "Bob",
     Surname: "Johnson",
-    MiddleName: "Charles",
-    Address: "789 Maple Avenue",
-    Phone: "555-9012",
-    Email: "bob.johnson@example.com",
-    DrivingLicenseCode: "IJKL9012",
+    MiddleName: "M",
   },
   {
-    DriverID: "9he92fe6-6fe4-6003-d7g4-63eaf9acf8ee",
-    UserID: "i8eh04f4-45ha-6841-e4f2-5d0393fdec11",
-    Government: "gov-id-101",
-    Name: "Carol",
+    FuelingPersonID: "45h70ghi-79g3-50hg-0239-9350183e378c",
+    UserID: "h9954099-f3c1-630g-c840-4c7d78f6c3b2",
+    Certification: "Fuel Safety Specialist",
+    Name: "Bob",
     Surname: "Williams",
-    MiddleName: "Diane",
-    Address: "101 Oak Circle",
-    Phone: "555-3456",
-    Email: "carol.williams@example.com",
-    DrivingLicenseCode: "MNOP3456",
+    MiddleName: "N",
   },
   {
-    DriverID: "afg93gg7-7gh5-7004-e8h5-74fbg0bdg9ff",
-    UserID: "j9fi05g5-55ib-7942-f5g3-6e0494gdfg22",
-    Government: "gov-id-202",
-    Name: "David",
+    FuelingPersonID: "56i81ijk-80h4-71ij-1340-0461294f489d",
+    UserID: "i0065010-g4d2-731h-d951-5d8e89g7d4c3",
+    Certification: "Gas Handling Expert",
+    Name: "Carol",
     Surname: "Brown",
-    MiddleName: "Edward",
-    Address: "202 Pine Street",
-    Phone: "555-7890",
-    Email: "david.brown@example.com",
-    DrivingLicenseCode: "QRST7890",
+    MiddleName: "O",
+  },
+  {
+    FuelingPersonID: "67j92jkl-91i5-82jk-2451-1572305g59ae",
+    UserID: "j1176121-h5e3-842i-e062-6e9f9ah8e5d4",
+    Certification: "Petroleum Transfer Engineer",
+    Name: "David",
+    Surname: "Miller",
+    MiddleName: "P",
   },
 ];
 
-export type Driver = {
-  DriverID: string;
+export type FuelingPerson = {
+  FuelingPersonID: string;
   UserID: string;
-  Government: string;
+  Certification: string;
   Name: string;
   Surname: string;
   MiddleName: string;
-  Address: string;
-  Phone: string;
-  Email: string;
-  DrivingLicenseCode: string;
 };
 
-export const columns: ColumnDef<Driver>[] = [
+export const columns: ColumnDef<FuelingPerson>[] = [
   {
     id: "fullName",
     header: "Full Name",
     accessorFn: (row) => `${row.Name} ${row.Surname}`,
-    cell: ({ getValue }) => {
-      const fullName = getValue() as string; // Cast the value to string
-      return <div className="capitalize">{fullName}</div>;
-    },
+    cell: ({ getValue }) => (
+      <div className="capitalize">{getValue() as string}</div>
+    ),
   },
   {
-    accessorKey: "Email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("Email")}</div>,
-  },
-  {
-    accessorKey: "DrivingLicenseCode",
-    header: "License Code",
-    cell: ({ row }) => <div>{row.getValue("DrivingLicenseCode")}</div>,
-  },
-  {
-    accessorKey: "Phone",
-    header: "Phone",
-    cell: ({ row }) => <div>{row.getValue("Phone")}</div>,
+    accessorKey: "Certification",
+    header: "Certification",
+    cell: ({ row }) => <div>{row.getValue("Certification")}</div>,
   },
   {
     id: "actions",
+    header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const driver = row.original;
-
+      const fuelingPerson = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -165,12 +116,14 @@ export const columns: ColumnDef<Driver>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(driver.DriverID)}
+              onClick={() =>
+                navigator.clipboard.writeText(fuelingPerson.FuelingPersonID)
+              }
             >
-              Copy Driver ID
+              Copy Fueling Person ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View Driver Details</DropdownMenuItem>
+            <DropdownMenuItem>View Fueling Person Details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -178,7 +131,7 @@ export const columns: ColumnDef<Driver>[] = [
   },
 ];
 
-export function DriverTable() {
+export function FuelingTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

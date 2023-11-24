@@ -37,123 +37,135 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const data: Driver[] = [
+const data: Vehicle[] = [
   {
-    DriverID: "6de90cb4-3cd2-4000-a4e2-41c9f78aee5b",
-    UserID: "f5cf02d2-15f8-4628-b1d0-2b0181cdbd98",
-    Government: "gov-id-123",
-    Name: "John",
-    Surname: "Doe",
-    MiddleName: "Allen",
-    Address: "123 Main Street",
-    Phone: "555-1234",
-    Email: "john.doe@example.com",
-    DrivingLicenseCode: "ABCD1234",
+    VehicleID: "885d291d-f8d7-4edc-bce5-4d7943b35089",
+    Model: "Toyota Corolla",
+    Year: 2022,
+    LicensePlate: "ABCD1234",
+    SeatingCapacity: 5,
+    AssignedDriverID: null,
+    LastMaintenanceCheck: "2023-01-01T00:00:00Z",
+    TotalDistanceCovered: 5000,
+    FuelCapacity: 50,
+    FuelConsumed: 1500,
+    Photo: "http://example.com/vehicle1.jpg",
+    Status: "Inactive",
   },
   {
-    DriverID: "7fb90dc4-4cd2-4001-b5e2-41c9f78aee6c",
-    UserID: "g6cf02d2-25f8-4629-c2d0-3b0181cdbd99",
-    Government: "gov-id-456",
-    Name: "Alice",
-    Surname: "Smith",
-    MiddleName: "Beth",
-    Address: "456 Elm Street",
-    Phone: "555-5678",
-    Email: "alice.smith@example.com",
-    DrivingLicenseCode: "EFGH5678",
+    VehicleID: "993e2d2a-e8f9-4bbf-a2d2-61a2b5c40956",
+    Model: "Honda Civic",
+    Year: 2021,
+    LicensePlate: "EFGH5678",
+    SeatingCapacity: 5,
+    AssignedDriverID: "7fb90dc4-4cd2-4001-b5e2-41c9f78aee6c",
+    LastMaintenanceCheck: "2023-03-15T00:00:00Z",
+    TotalDistanceCovered: 8000,
+    FuelCapacity: 45,
+    FuelConsumed: 2000,
+    Photo: "http://example.com/vehicle2.jpg",
+    Status: "Active",
   },
   {
-    DriverID: "8gd91ed5-5ed3-5002-c6f3-52d9f89bfe7d",
-    UserID: "h7dg03e3-35g9-5730-d3e1-4c0292eceb00",
-    Government: "gov-id-789",
-    Name: "Bob",
-    Surname: "Johnson",
-    MiddleName: "Charles",
-    Address: "789 Maple Avenue",
-    Phone: "555-9012",
-    Email: "bob.johnson@example.com",
-    DrivingLicenseCode: "IJKL9012",
+    VehicleID: "aa4e3d3b-f0a1-4dcb-833a-72b3c5d41077",
+    Model: "Ford Focus",
+    Year: 2020,
+    LicensePlate: "IJKL9012",
+    SeatingCapacity: 5,
+    AssignedDriverID: "8gd91ed5-5ed3-5002-c6f3-52d9f89bfe7d",
+    LastMaintenanceCheck: "2023-02-20T00:00:00Z",
+    TotalDistanceCovered: 6000,
+    FuelCapacity: 48,
+    FuelConsumed: 1800,
+    Photo: "http://example.com/vehicle3.jpg",
+    Status: "Active",
   },
   {
-    DriverID: "9he92fe6-6fe4-6003-d7g4-63eaf9acf8ee",
-    UserID: "i8eh04f4-45ha-6841-e4f2-5d0393fdec11",
-    Government: "gov-id-101",
-    Name: "Carol",
-    Surname: "Williams",
-    MiddleName: "Diane",
-    Address: "101 Oak Circle",
-    Phone: "555-3456",
-    Email: "carol.williams@example.com",
-    DrivingLicenseCode: "MNOP3456",
+    VehicleID: "bb5f4e4c-f213-5edc-944b-83c4d6e51188",
+    Model: "Chevrolet Cruze",
+    Year: 2019,
+    LicensePlate: "MNOP3456",
+    SeatingCapacity: 5,
+    AssignedDriverID: "9he92fe6-6fe4-6003-d7g4-63eaf9acf8ee",
+    LastMaintenanceCheck: "2023-04-10T00:00:00Z",
+    TotalDistanceCovered: 4000,
+    FuelCapacity: 52,
+    FuelConsumed: 1600,
+    Photo: "http://example.com/vehicle4.jpg",
+    Status: "Inactive",
   },
   {
-    DriverID: "afg93gg7-7gh5-7004-e8h5-74fbg0bdg9ff",
-    UserID: "j9fi05g5-55ib-7942-f5g3-6e0494gdfg22",
-    Government: "gov-id-202",
-    Name: "David",
-    Surname: "Brown",
-    MiddleName: "Edward",
-    Address: "202 Pine Street",
-    Phone: "555-7890",
-    Email: "david.brown@example.com",
-    DrivingLicenseCode: "QRST7890",
+    VehicleID: "cc6g5f5d-g324-6efd-a5dc-94d5e7f62299",
+    Model: "Subaru Impreza",
+    Year: 2018,
+    LicensePlate: "QRST7890",
+    SeatingCapacity: 5,
+    AssignedDriverID: null,
+    LastMaintenanceCheck: "2023-05-05T00:00:00Z",
+    TotalDistanceCovered: 3000,
+    FuelCapacity: 50,
+    FuelConsumed: 1400,
+    Photo: "http://example.com/vehicle5.jpg",
+    Status: "Active",
   },
 ];
 
-export type Driver = {
-  DriverID: string;
-  UserID: string;
-  Government: string;
-  Name: string;
-  Surname: string;
-  MiddleName: string;
-  Address: string;
-  Phone: string;
-  Email: string;
-  DrivingLicenseCode: string;
+export type Vehicle = {
+  VehicleID: string;
+  Model: string;
+  Year: number;
+  LicensePlate: string;
+  SeatingCapacity: number;
+  AssignedDriverID: string | null;
+  LastMaintenanceCheck: string;
+  TotalDistanceCovered: number;
+  FuelCapacity: number;
+  FuelConsumed: number;
+  Photo: string;
+  Status: "Active" | "Inactive";
 };
-
-export const columns: ColumnDef<Driver>[] = [
+export const columns: ColumnDef<Vehicle>[] = [
   {
-    id: "fullName",
-    header: "Full Name",
-    accessorFn: (row) => `${row.Name} ${row.Surname}`,
-    cell: ({ getValue }) => {
-      const fullName = getValue() as string; // Cast the value to string
-      return <div className="capitalize">{fullName}</div>;
-    },
-  },
-  {
-    accessorKey: "Email",
+    accessorKey: "Status",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Status
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("Email")}</div>,
+    cell: ({ row }) => <div className="ml-4">{row.getValue("Status")}</div>,
   },
   {
-    accessorKey: "DrivingLicenseCode",
-    header: "License Code",
-    cell: ({ row }) => <div>{row.getValue("DrivingLicenseCode")}</div>,
+    accessorKey: "Model",
+    header: "Model",
+    cell: ({ row }) => <div>{row.getValue("Model")}</div>,
   },
   {
-    accessorKey: "Phone",
-    header: "Phone",
-    cell: ({ row }) => <div>{row.getValue("Phone")}</div>,
+    accessorKey: "Year",
+    header: "Year",
+    cell: ({ row }) => <div>{row.getValue("Year")}</div>,
+  },
+  {
+    accessorKey: "LicensePlate",
+    header: "License Plate",
+    cell: ({ row }) => <div>{row.getValue("LicensePlate")}</div>,
+  },
+  {
+    accessorKey: "SeatingCapacity",
+    header: "Seating Capacity",
+    cell: ({ row }) => <div>{row.getValue("SeatingCapacity")}</div>,
   },
   {
     id: "actions",
+    header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const driver = row.original;
-
+      const vehicle = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -165,12 +177,15 @@ export const columns: ColumnDef<Driver>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(driver.DriverID)}
+              onClick={() => navigator.clipboard.writeText(vehicle.VehicleID)}
             >
-              Copy Driver ID
+              Copy Vehicle ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View Driver Details</DropdownMenuItem>
+            <DropdownMenuItem>Edit Vehicle Details</DropdownMenuItem>
+            <DropdownMenuItem>View Maintenance History</DropdownMenuItem>
+            <DropdownMenuItem>Assign Driver</DropdownMenuItem>
+            <DropdownMenuItem>Deactivate Vehicle</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -178,7 +193,7 @@ export const columns: ColumnDef<Driver>[] = [
   },
 ];
 
-export function DriverTable() {
+export function VehiclesTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

@@ -37,123 +37,122 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const data: Driver[] = [
+const data: Task[] = [
   {
-    DriverID: "6de90cb4-3cd2-4000-a4e2-41c9f78aee5b",
-    UserID: "f5cf02d2-15f8-4628-b1d0-2b0181cdbd98",
-    Government: "gov-id-123",
-    Name: "John",
-    Surname: "Doe",
-    MiddleName: "Allen",
-    Address: "123 Main Street",
-    Phone: "555-1234",
-    Email: "john.doe@example.com",
-    DrivingLicenseCode: "ABCD1234",
+    TaskID: "50e85d40-2a3a-4245-a824-44296eda8ba7",
+    AssignedDriverID: null,
+    Title: "Go from Mega Silkway to Baiterek",
+    Description:
+      "Arrive at 11:00am to Mega Silkway and get to Baiterek until 12:00pm",
+    Status: "not_assigned",
+    WhereFrom: "Mega Silkway",
+    WhereTo: "Baiterek",
+    Distance: 5.9,
   },
   {
-    DriverID: "7fb90dc4-4cd2-4001-b5e2-41c9f78aee6c",
-    UserID: "g6cf02d2-25f8-4629-c2d0-3b0181cdbd99",
-    Government: "gov-id-456",
-    Name: "Alice",
-    Surname: "Smith",
-    MiddleName: "Beth",
-    Address: "456 Elm Street",
-    Phone: "555-5678",
-    Email: "alice.smith@example.com",
-    DrivingLicenseCode: "EFGH5678",
+    TaskID: "60f96e51-3b4b-5356-b925-56397fea9c8",
+    AssignedDriverID: "7fb90dc4-4cd2-4001-b5e2-41c9f78aee6c",
+    Title: "Deliver documents to City Hall",
+    Description:
+      "Pick up documents from the office and deliver them to the City Hall by 3:00pm",
+    Status: "in_progress",
+    WhereFrom: "Office",
+    WhereTo: "City Hall",
+    Distance: 3.2,
   },
   {
-    DriverID: "8gd91ed5-5ed3-5002-c6f3-52d9f89bfe7d",
-    UserID: "h7dg03e3-35g9-5730-d3e1-4c0292eceb00",
-    Government: "gov-id-789",
-    Name: "Bob",
-    Surname: "Johnson",
-    MiddleName: "Charles",
-    Address: "789 Maple Avenue",
-    Phone: "555-9012",
-    Email: "bob.johnson@example.com",
-    DrivingLicenseCode: "IJKL9012",
+    TaskID: "71g07f62-4c5c-6467-ca36-674a8feba9d",
+    AssignedDriverID: "8gd91ed5-5ed3-5002-c6f3-52d9f89bfe7d",
+    Title: "Airport pickup",
+    Description:
+      "Pick up client from the airport and drop them at the downtown hotel",
+    Status: "finished",
+    WhereFrom: "Airport",
+    WhereTo: "Downtown Hotel",
+    Distance: 12.5,
   },
   {
-    DriverID: "9he92fe6-6fe4-6003-d7g4-63eaf9acf8ee",
-    UserID: "i8eh04f4-45ha-6841-e4f2-5d0393fdec11",
-    Government: "gov-id-101",
-    Name: "Carol",
-    Surname: "Williams",
-    MiddleName: "Diane",
-    Address: "101 Oak Circle",
-    Phone: "555-3456",
-    Email: "carol.williams@example.com",
-    DrivingLicenseCode: "MNOP3456",
+    TaskID: "82h18g73-5d6d-7578-db47-785b9g0cb0e",
+    AssignedDriverID: "9he92fe6-6fe4-6003-d7g4-63eaf9acf8ee",
+    Title: "Equipment transport to new office",
+    Description:
+      "Transport all marked equipment from the old office to the new location",
+    Status: "not_assigned",
+    WhereFrom: "Old Office",
+    WhereTo: "New Office",
+    Distance: 7.8,
   },
   {
-    DriverID: "afg93gg7-7gh5-7004-e8h5-74fbg0bdg9ff",
-    UserID: "j9fi05g5-55ib-7942-f5g3-6e0494gdfg22",
-    Government: "gov-id-202",
-    Name: "David",
-    Surname: "Brown",
-    MiddleName: "Edward",
-    Address: "202 Pine Street",
-    Phone: "555-7890",
-    Email: "david.brown@example.com",
-    DrivingLicenseCode: "QRST7890",
+    TaskID: "93i29h84-6e7e-8689-ec58-896ca1d1c1f",
+    AssignedDriverID: null,
+    Title: "Urgent parcel delivery",
+    Description:
+      "Deliver the urgent parcel to the specified address without delay",
+    Status: "in_progress",
+    WhereFrom: "Warehouse",
+    WhereTo: "Specified Address",
+    Distance: 4.4,
   },
 ];
 
-export type Driver = {
-  DriverID: string;
-  UserID: string;
-  Government: string;
-  Name: string;
-  Surname: string;
-  MiddleName: string;
-  Address: string;
-  Phone: string;
-  Email: string;
-  DrivingLicenseCode: string;
+export type Task = {
+  TaskID: string;
+  AssignedDriverID: string | null;
+  Title: string;
+  Description: string;
+  Status: "not_assigned" | "in_progress" | "finished";
+  WhereFrom: string;
+  WhereTo: string;
+  Distance: number;
 };
 
-export const columns: ColumnDef<Driver>[] = [
+export const columns: ColumnDef<Task>[] = [
   {
-    id: "fullName",
-    header: "Full Name",
-    accessorFn: (row) => `${row.Name} ${row.Surname}`,
-    cell: ({ getValue }) => {
-      const fullName = getValue() as string; // Cast the value to string
-      return <div className="capitalize">{fullName}</div>;
+    accessorKey: "Status",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Status
+        <CaretSortIcon className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      const statusValue = row.getValue("Status");
+      let displayValue = "";
+
+      switch (statusValue) {
+        case "not_assigned":
+          displayValue = "Not Assigned";
+          break;
+        case "in_progress":
+          displayValue = "In Progress";
+          break;
+        case "finished":
+          displayValue = "Finished";
+          break;
+      }
+
+      return <div className="m-4">{displayValue}</div>;
     },
   },
   {
-    accessorKey: "Email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("Email")}</div>,
+    accessorKey: "Title",
+    header: "Title",
+    cell: ({ row }) => <div>{row.getValue("Title")}</div>,
   },
   {
-    accessorKey: "DrivingLicenseCode",
-    header: "License Code",
-    cell: ({ row }) => <div>{row.getValue("DrivingLicenseCode")}</div>,
-  },
-  {
-    accessorKey: "Phone",
-    header: "Phone",
-    cell: ({ row }) => <div>{row.getValue("Phone")}</div>,
+    accessorKey: "Description",
+    header: "Description",
+    cell: ({ row }) => <div>{row.getValue("Description")}</div>,
   },
   {
     id: "actions",
+    header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const driver = row.original;
-
+      const task = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -165,12 +164,14 @@ export const columns: ColumnDef<Driver>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(driver.DriverID)}
+              onClick={() => navigator.clipboard.writeText(task.TaskID)}
             >
-              Copy Driver ID
+              Copy Task ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View Driver Details</DropdownMenuItem>
+            <DropdownMenuItem>View Task Details</DropdownMenuItem>
+            <DropdownMenuItem>Update Status</DropdownMenuItem>
+            <DropdownMenuItem>Reassign Task</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -178,7 +179,7 @@ export const columns: ColumnDef<Driver>[] = [
   },
 ];
 
-export function DriverTable() {
+export function TasksTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

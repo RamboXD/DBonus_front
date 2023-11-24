@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { ChevronDownIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -37,123 +33,88 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const data: Driver[] = [
+const data: MaintenancePerson[] = [
   {
-    DriverID: "6de90cb4-3cd2-4000-a4e2-41c9f78aee5b",
-    UserID: "f5cf02d2-15f8-4628-b1d0-2b0181cdbd98",
-    Government: "gov-id-123",
+    MaintenancePersonID: "0e686d0f-2182-4b2d-894b-3278b53a76c9",
+    UserID: "4fe5b7ad-84a2-4531-bd24-78b8dbfd39ab",
     Name: "John",
     Surname: "Doe",
-    MiddleName: "Allen",
-    Address: "123 Main Street",
-    Phone: "555-1234",
-    Email: "john.doe@example.com",
-    DrivingLicenseCode: "ABCD1234",
+    MiddleName: "Middle",
+    Qualifications: "Maintenance Person",
+    Experience: "5 years",
   },
   {
-    DriverID: "7fb90dc4-4cd2-4001-b5e2-41c9f78aee6c",
-    UserID: "g6cf02d2-25f8-4629-c2d0-3b0181cdbd99",
-    Government: "gov-id-456",
+    MaintenancePersonID: "1f787e10-2293-4c3e-895c-4389b54b77d0",
+    UserID: "5gf6c8be-95b3-5642-ce35-89c9ebfd40bc",
     Name: "Alice",
     Surname: "Smith",
-    MiddleName: "Beth",
-    Address: "456 Elm Street",
-    Phone: "555-5678",
-    Email: "alice.smith@example.com",
-    DrivingLicenseCode: "EFGH5678",
+    MiddleName: "Ann",
+    Qualifications: "Senior Technician",
+    Experience: "7 years",
   },
   {
-    DriverID: "8gd91ed5-5ed3-5002-c6f3-52d9f89bfe7d",
-    UserID: "h7dg03e3-35g9-5730-d3e1-4c0292eceb00",
-    Government: "gov-id-789",
+    MaintenancePersonID: "2g898f21-33a4-5d4f-9a6d-549ac65c88e1",
+    UserID: "6hg7d9cf-a6c4-6753-df46-9ad0fbge51cd",
     Name: "Bob",
     Surname: "Johnson",
-    MiddleName: "Charles",
-    Address: "789 Maple Avenue",
-    Phone: "555-9012",
-    Email: "bob.johnson@example.com",
-    DrivingLicenseCode: "IJKL9012",
+    MiddleName: "Brian",
+    Qualifications: "Electrical Specialist",
+    Experience: "4 years",
   },
   {
-    DriverID: "9he92fe6-6fe4-6003-d7g4-63eaf9acf8ee",
-    UserID: "i8eh04f4-45ha-6841-e4f2-5d0393fdec11",
-    Government: "gov-id-101",
+    MaintenancePersonID: "3h9a0g32-44b5-6e60-ab7e-65abdc7f99f2",
+    UserID: "7ij8e0dg-b7d5-7864-eg57-abd1gchf62de",
     Name: "Carol",
     Surname: "Williams",
-    MiddleName: "Diane",
-    Address: "101 Oak Circle",
-    Phone: "555-3456",
-    Email: "carol.williams@example.com",
-    DrivingLicenseCode: "MNOP3456",
+    MiddleName: "Cathy",
+    Qualifications: "Mechanical Engineer",
+    Experience: "6 years",
   },
   {
-    DriverID: "afg93gg7-7gh5-7004-e8h5-74fbg0bdg9ff",
-    UserID: "j9fi05g5-55ib-7942-f5g3-6e0494gdfg22",
-    Government: "gov-id-202",
+    MaintenancePersonID: "4i0b1h43-55c6-7f71-bc8f-76cdei8j0ag3",
+    UserID: "8jk9f1eh-c8e6-8975-fg68-bce2jdi7i3ef",
     Name: "David",
     Surname: "Brown",
-    MiddleName: "Edward",
-    Address: "202 Pine Street",
-    Phone: "555-7890",
-    Email: "david.brown@example.com",
-    DrivingLicenseCode: "QRST7890",
+    MiddleName: "Derek",
+    Qualifications: "HVAC Expert",
+    Experience: "8 years",
   },
 ];
 
-export type Driver = {
-  DriverID: string;
+export type MaintenancePerson = {
+  MaintenancePersonID: string;
   UserID: string;
-  Government: string;
   Name: string;
   Surname: string;
   MiddleName: string;
-  Address: string;
-  Phone: string;
-  Email: string;
-  DrivingLicenseCode: string;
+  Qualifications: string;
+  Experience: string;
 };
 
-export const columns: ColumnDef<Driver>[] = [
+export const columns: ColumnDef<MaintenancePerson>[] = [
   {
     id: "fullName",
     header: "Full Name",
     accessorFn: (row) => `${row.Name} ${row.Surname}`,
-    cell: ({ getValue }) => {
-      const fullName = getValue() as string; // Cast the value to string
-      return <div className="capitalize">{fullName}</div>;
-    },
+    cell: ({ getValue }) => (
+      <div className="capitalize">{getValue() as string}</div>
+    ),
   },
   {
-    accessorKey: "Email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("Email")}</div>,
+    accessorKey: "Qualifications",
+    header: "Qualifications",
+    cell: ({ row }) => <div>{row.getValue("Qualifications")}</div>,
   },
   {
-    accessorKey: "DrivingLicenseCode",
-    header: "License Code",
-    cell: ({ row }) => <div>{row.getValue("DrivingLicenseCode")}</div>,
-  },
-  {
-    accessorKey: "Phone",
-    header: "Phone",
-    cell: ({ row }) => <div>{row.getValue("Phone")}</div>,
+    accessorKey: "Experience",
+    header: "Experience",
+    cell: ({ row }) => <div>{row.getValue("Experience")}</div>,
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const driver = row.original;
-
+      const maintenancePerson = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -165,12 +126,16 @@ export const columns: ColumnDef<Driver>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(driver.DriverID)}
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  maintenancePerson.MaintenancePersonID
+                )
+              }
             >
-              Copy Driver ID
+              Copy Maintenance Person ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View Driver Details</DropdownMenuItem>
+            <DropdownMenuItem>View Maintenance Person Details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -178,7 +143,7 @@ export const columns: ColumnDef<Driver>[] = [
   },
 ];
 
-export function DriverTable() {
+export function MaintenanceTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
