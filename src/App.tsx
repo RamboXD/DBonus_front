@@ -3,15 +3,11 @@ import { routes } from "./constants/routes";
 import { SidebarProvider } from "./contexts/sidebarContext";
 
 import { Navigate } from "react-router-dom";
+import { ThemeProvider } from "./contexts/theme-provider";
 
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
   return !!token;
-};
-
-const getRole = () => {
-  const role = localStorage.getItem("role");
-  return role;
 };
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -25,15 +21,14 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
 
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (isAuthenticated()) {
-    if (getRole() === "member") return <Navigate to="/member/jobs" replace />;
-    return <Navigate to="/caregiver/jobs" replace />;
+    return <Navigate to="/member/jobs" replace />;
   }
   return <>{children}</>;
 };
 
 const App: React.FC = () => {
   return (
-    <>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <SidebarProvider>
         <Routes>
           {routes.map((route) => {
@@ -49,11 +44,10 @@ const App: React.FC = () => {
               />
             );
           })}
-          {/* Redirect to a default route if no match is found */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </SidebarProvider>
-    </>
+    </ThemeProvider>
   );
 };
 

@@ -15,7 +15,6 @@ const Login: React.FC = () => {
       const result = await login(data);
       console.log(result);
       localStorage.setItem("token", result.data.access_token);
-      localStorage.setItem("role", result.data.role);
       dispatch(setAuth(true));
       navigate("/administration/organizations");
     } catch (error) {

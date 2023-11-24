@@ -82,12 +82,10 @@ export const logout = createAsyncThunk("auth/logout", async function () {
 
 interface userState {
   isAuth: boolean;
-  role: string;
 }
 
 const initialState: userState = {
   isAuth: false,
-  role: "null",
 };
 
 export const authSlice = createSlice({

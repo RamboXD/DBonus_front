@@ -1,4 +1,5 @@
-import { Login, Registration } from "@/pages";
+import { Login } from "@/pages";
+import { Drivers, Fuels, Maintenance, Tasks, Vehicles } from "@/pages/Admin";
 import { Jobs } from "@/pages/Administration";
 import Caregivers from "@/pages/Administration/Deals/Caregivers";
 import Appointments from "@/pages/Administration/Employees/Appointments";
@@ -6,6 +7,7 @@ import JobApplicants from "@/pages/Administration/Organizations/JobApplicants";
 import ApplicationList from "@/pages/Caregiver/Applications/ApplicationList";
 import AppointmentList from "@/pages/Caregiver/Appointments/AppointmentList";
 import JobList from "@/pages/Caregiver/Jobs/JobList";
+import Landing from "@/pages/Landing/Landing";
 import { IRoute, Role } from "@/ts/types";
 
 export const routes: IRoute[] = [
@@ -13,6 +15,48 @@ export const routes: IRoute[] = [
     name: "Worker Login",
     path: "/login",
     component: <Login />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: true,
+  },
+  {
+    name: "Landing Page",
+    path: "/",
+    component: <Landing />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: true,
+  },
+  {
+    name: "Drivers",
+    path: "/drivers",
+    component: <Drivers />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: true,
+  },
+  {
+    name: "Fueling people",
+    path: "/fuels",
+    component: <Fuels />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: true,
+  },
+  {
+    name: "Maintenance people",
+    path: "/maintenance",
+    component: <Maintenance />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: true,
+  },
+  {
+    name: "Tasks",
+    path: "/tasks",
+    component: <Tasks />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: true,
+  },
+  {
+    name: "Vehicles",
+    path: "/vehicles",
+    component: <Vehicles />,
     roles: [Role.CLIENT, Role.ADMIN],
     isPublic: true,
   },
@@ -65,11 +109,11 @@ export const routes: IRoute[] = [
     roles: [Role.CLIENT, Role.ADMIN],
     isPublic: false,
   },
-  {
-    name: "Registration",
-    path: "/registration",
-    component: <Registration />,
-    roles: [Role.CLIENT, Role.ADMIN],
-    isPublic: true,
-  },
+  // {
+  //   name: "Registration",
+  //   path: "/registration",
+  //   component: <Registration />,
+  //   roles: [Role.CLIENT, Role.ADMIN],
+  //   isPublic: true,
+  // },
 ];
