@@ -36,8 +36,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ModalVehicle } from "@/pages/Admin/components/modalVehicle";
+import { VehicleRega } from "@/pages/Admin/types/types";
+import { ProgressIndicator } from "@/pages/Admin/components/progressPage";
 
-const data: Vehicle[] = [
+const dataX: Vehicle[] = [
   {
     VehicleID: "885d291d-f8d7-4edc-bce5-4d7943b35089",
     Model: "Toyota Corolla",
@@ -194,6 +197,21 @@ export const columns: ColumnDef<Vehicle>[] = [
 ];
 
 export function VehiclesTable() {
+  const [data, setData] = React.useState<Vehicle[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [progress, setProgress] = React.useState(0);
+  const [profileData, setProfileData] = React.useState<VehicleRega>({
+    Model: "",
+    Year: new Date().getFullYear(), // current year as default
+    LicensePlate: "",
+    SeatingCapacity: 0,
+    LastMaintenanceCheck: new Date().toISOString().split("T")[0], // current date in YYYY-MM-DD format
+    TotalDistanceCovered: 0.0,
+    FuelCapacity: 0.0,
+    FuelConsumed: 0.0,
+    Photo: "", // Placeholder URL
+    Status: "Inactive", // Default status
+  });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -224,6 +242,39 @@ export function VehiclesTable() {
   const onGlobalFilterChange = (value: string) => {
     table.setGlobalFilter(value);
   };
+  React.useEffect(() => {
+    setIsLoading(true);
+    let timer: any;
+
+    // Function to increment progress
+    const incrementProgress = () => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(timer);
+          setIsLoading(false);
+          // const response = await axios.get(
+          //   "https://your-api-endpoint.com/drivers"
+          // );
+          // setData(response.data); // Assuming the response data is the array of drivers
+          setData(dataX);
+          return 100;
+        }
+        return prevProgress + 10; // Increment by 10 every 200ms
+      });
+    };
+
+    timer = setInterval(incrementProgress, 200); // Update progress every 200ms
+
+    return () => clearInterval(timer); // Cleanup interval on component unmount
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ProgressIndicator value={progress} />
+      </div>
+    );
+  }
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -231,7 +282,12 @@ export function VehiclesTable() {
           placeholder="Filter..."
           value={globalFilterValue}
           onChange={(event) => onGlobalFilterChange(event.target.value)}
-          className="max-w-sm"
+          className="max-w-sm mr-5"
+        />
+        <ModalVehicle
+          content={"Create Vehicle"}
+          vehicleData={profileData}
+          setVehicleData={setProfileData}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

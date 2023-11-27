@@ -36,8 +36,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ModalTask } from "@/pages/Admin/components/modalTask";
+import { TaskRega } from "@/pages/Admin/types/types";
+import { ProgressIndicator } from "@/pages/Admin/components/progressPage";
 
-const data: Task[] = [
+const dataX: Task[] = [
   {
     TaskID: "50e85d40-2a3a-4245-a824-44296eda8ba7",
     AssignedDriverID: null,
@@ -180,10 +183,20 @@ export const columns: ColumnDef<Task>[] = [
 ];
 
 export function TasksTable() {
+  const [data, setData] = React.useState<Task[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [progress, setProgress] = React.useState(0);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [profileData, setProfileData] = React.useState<TaskRega>({
+    title: "",
+    description: "",
+    where_from: "",
+    where_to: "",
+    distance: 0,
+  });
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -210,6 +223,62 @@ export function TasksTable() {
   const onGlobalFilterChange = (value: string) => {
     table.setGlobalFilter(value);
   };
+  // React.useEffect(() => {
+  //   const fetchData = async () => {
+  //     setIsLoading(true);
+  //     setProgress(30); // Initial progress
+
+  //     try {
+  //       // const response = await axios.get(
+  //       //   "https://your-api-endpoint.com/drivers"
+  //       // );
+  //       // setData(response.data); // Assuming the response data is the array of drivers
+  //       setData(dataX);
+  //       setProgress(100); // Complete progress
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       setIsLoading(false); // Stop loading even if there is an error
+  //       setProgress(100); // Complete progress even in case of an error
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    let timer: any;
+
+    // Function to increment progress
+    const incrementProgress = () => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(timer);
+          setIsLoading(false);
+          // const response = await axios.get(
+          //   "https://your-api-endpoint.com/drivers"
+          // );
+          // setData(response.data); // Assuming the response data is the array of drivers
+          setData(dataX);
+          return 100;
+        }
+        return prevProgress + 10; // Increment by 10 every 200ms
+      });
+    };
+
+    timer = setInterval(incrementProgress, 200); // Update progress every 200ms
+
+    return () => clearInterval(timer); // Cleanup interval on component unmount
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ProgressIndicator value={progress} />
+      </div>
+    );
+  }
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -217,7 +286,12 @@ export function TasksTable() {
           placeholder="Filter..."
           value={globalFilterValue}
           onChange={(event) => onGlobalFilterChange(event.target.value)}
-          className="max-w-sm"
+          className="max-w-sm mr-5"
+        />
+        <ModalTask
+          content={"Create Task"}
+          taskData={profileData}
+          setTaskData={setProfileData}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

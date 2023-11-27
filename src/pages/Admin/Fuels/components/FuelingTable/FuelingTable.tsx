@@ -32,8 +32,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ModalFueling } from "@/pages/Admin/components/modalFueling";
+import { FuelingProfileRega } from "@/pages/Admin/types/types";
+import { ProgressIndicator } from "@/pages/Admin/components/progressPage";
 
-const data: FuelingPerson[] = [
+const dataX: FuelingPerson[] = [
   {
     FuelingPersonID: "25e58ded-58d2-48df-8118-8250072d268a",
     UserID: "f7743878-d1a0-429f-a829-2a6d67e4a009",
@@ -132,6 +135,21 @@ export const columns: ColumnDef<FuelingPerson>[] = [
 ];
 
 export function FuelingTable() {
+  const [data, setData] = React.useState<FuelingPerson[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [progress, setProgress] = React.useState(0);
+  const [profileData, setProfileData] = React.useState<FuelingProfileRega>({
+    user: {
+      email: "",
+      password: "",
+    },
+    fueling_person: {
+      certification: "",
+      name: "",
+      surname: "",
+      middleName: "",
+    },
+  });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -162,6 +180,39 @@ export function FuelingTable() {
   const onGlobalFilterChange = (value: string) => {
     table.setGlobalFilter(value);
   };
+  React.useEffect(() => {
+    setIsLoading(true);
+    let timer: any;
+
+    // Function to increment progress
+    const incrementProgress = () => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(timer);
+          setIsLoading(false);
+          // const response = await axios.get(
+          //   "https://your-api-endpoint.com/drivers"
+          // );
+          // setData(response.data); // Assuming the response data is the array of drivers
+          setData(dataX);
+          return 100;
+        }
+        return prevProgress + 10; // Increment by 10 every 200ms
+      });
+    };
+
+    timer = setInterval(incrementProgress, 200); // Update progress every 200ms
+
+    return () => clearInterval(timer); // Cleanup interval on component unmount
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ProgressIndicator value={progress} />
+      </div>
+    );
+  }
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -169,7 +220,12 @@ export function FuelingTable() {
           placeholder="Filter..."
           value={globalFilterValue}
           onChange={(event) => onGlobalFilterChange(event.target.value)}
-          className="max-w-sm"
+          className="max-w-sm mr-5"
+        />
+        <ModalFueling
+          content={"Create Fueling Person"}
+          profileData={profileData}
+          setProfileData={setProfileData}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

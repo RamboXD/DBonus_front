@@ -36,8 +36,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Modal } from "@/pages/Admin";
+import { Driver, DriverProfileRega } from "@/pages/Admin/types/types";
+import axios from "axios";
+import { ProgressIndicator } from "@/pages/Admin/components/progressPage";
 
-const data: Driver[] = [
+const dataX: Driver[] = [
   {
     DriverID: "6de90cb4-3cd2-4000-a4e2-41c9f78aee5b",
     UserID: "f5cf02d2-15f8-4628-b1d0-2b0181cdbd98",
@@ -99,19 +103,6 @@ const data: Driver[] = [
     DrivingLicenseCode: "QRST7890",
   },
 ];
-
-export type Driver = {
-  DriverID: string;
-  UserID: string;
-  Government: string;
-  Name: string;
-  Surname: string;
-  MiddleName: string;
-  Address: string;
-  Phone: string;
-  Email: string;
-  DrivingLicenseCode: string;
-};
 
 export const columns: ColumnDef<Driver>[] = [
   {
@@ -179,6 +170,9 @@ export const columns: ColumnDef<Driver>[] = [
 ];
 
 export function DriverTable() {
+  const [data, setData] = React.useState<Driver[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [progress, setProgress] = React.useState(0);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -187,6 +181,23 @@ export function DriverTable() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const [profileData, setProfileData] = React.useState<DriverProfileRega>({
+    user: {
+      email: "",
+      password: "",
+    },
+    driver: {
+      government: "",
+      name: "",
+      surname: "",
+      middleName: "",
+      address: "",
+      phone: "",
+      email: "",
+      drivingLicenseCode: "",
+    },
+  });
+  console.log(profileData);
   const table = useReactTable({
     data,
     columns,
@@ -209,6 +220,40 @@ export function DriverTable() {
   const onGlobalFilterChange = (value: string) => {
     table.setGlobalFilter(value);
   };
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    let timer: any;
+
+    // Function to increment progress
+    const incrementProgress = () => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(timer);
+          setIsLoading(false);
+          // const response = await axios.get(
+          //   "https://your-api-endpoint.com/drivers"
+          // );
+          // setData(response.data); // Assuming the response data is the array of drivers
+          setData(dataX);
+          return 100;
+        }
+        return prevProgress + 10; // Increment by 10 every 200ms
+      });
+    };
+
+    timer = setInterval(incrementProgress, 200); // Update progress every 200ms
+
+    return () => clearInterval(timer); // Cleanup interval on component unmount
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ProgressIndicator value={progress} />
+      </div>
+    );
+  }
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -216,8 +261,14 @@ export function DriverTable() {
           placeholder="Filter..."
           value={globalFilterValue}
           onChange={(event) => onGlobalFilterChange(event.target.value)}
-          className="max-w-sm"
+          className="max-w-sm mr-5"
         />
+        <Modal
+          content={"Create Driver"}
+          profileData={profileData}
+          setProfileData={setProfileData}
+        />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
