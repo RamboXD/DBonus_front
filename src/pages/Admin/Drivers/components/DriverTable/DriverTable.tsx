@@ -38,149 +38,120 @@ import {
 } from "@/components/ui/table";
 import { Modal } from "@/pages/Admin";
 import { Driver, DriverProfileRega } from "@/pages/Admin/types/types";
-import axios from "axios";
 import { ProgressIndicator } from "@/pages/Admin/components/progressPage";
-
-const dataX: Driver[] = [
-  {
-    DriverID: "6de90cb4-3cd2-4000-a4e2-41c9f78aee5b",
-    UserID: "f5cf02d2-15f8-4628-b1d0-2b0181cdbd98",
-    Government: "gov-id-123",
-    Name: "John",
-    Surname: "Doe",
-    MiddleName: "Allen",
-    Address: "123 Main Street",
-    Phone: "555-1234",
-    Email: "john.doe@example.com",
-    DrivingLicenseCode: "ABCD1234",
-  },
-  {
-    DriverID: "7fb90dc4-4cd2-4001-b5e2-41c9f78aee6c",
-    UserID: "g6cf02d2-25f8-4629-c2d0-3b0181cdbd99",
-    Government: "gov-id-456",
-    Name: "Alice",
-    Surname: "Smith",
-    MiddleName: "Beth",
-    Address: "456 Elm Street",
-    Phone: "555-5678",
-    Email: "alice.smith@example.com",
-    DrivingLicenseCode: "EFGH5678",
-  },
-  {
-    DriverID: "8gd91ed5-5ed3-5002-c6f3-52d9f89bfe7d",
-    UserID: "h7dg03e3-35g9-5730-d3e1-4c0292eceb00",
-    Government: "gov-id-789",
-    Name: "Bob",
-    Surname: "Johnson",
-    MiddleName: "Charles",
-    Address: "789 Maple Avenue",
-    Phone: "555-9012",
-    Email: "bob.johnson@example.com",
-    DrivingLicenseCode: "IJKL9012",
-  },
-  {
-    DriverID: "9he92fe6-6fe4-6003-d7g4-63eaf9acf8ee",
-    UserID: "i8eh04f4-45ha-6841-e4f2-5d0393fdec11",
-    Government: "gov-id-101",
-    Name: "Carol",
-    Surname: "Williams",
-    MiddleName: "Diane",
-    Address: "101 Oak Circle",
-    Phone: "555-3456",
-    Email: "carol.williams@example.com",
-    DrivingLicenseCode: "MNOP3456",
-  },
-  {
-    DriverID: "afg93gg7-7gh5-7004-e8h5-74fbg0bdg9ff",
-    UserID: "j9fi05g5-55ib-7942-f5g3-6e0494gdfg22",
-    Government: "gov-id-202",
-    Name: "David",
-    Surname: "Brown",
-    MiddleName: "Edward",
-    Address: "202 Pine Street",
-    Phone: "555-7890",
-    Email: "david.brown@example.com",
-    DrivingLicenseCode: "QRST7890",
-  },
-];
-
-export const columns: ColumnDef<Driver>[] = [
-  {
-    id: "fullName",
-    header: "Full Name",
-    accessorFn: (row) => `${row.Name} ${row.Surname}`,
-    cell: ({ getValue }) => {
-      const fullName = getValue() as string; // Cast the value to string
-      return <div className="capitalize">{fullName}</div>;
-    },
-  },
-  {
-    accessorKey: "Email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("Email")}</div>,
-  },
-  {
-    accessorKey: "DrivingLicenseCode",
-    header: "License Code",
-    cell: ({ row }) => <div>{row.getValue("DrivingLicenseCode")}</div>,
-  },
-  {
-    accessorKey: "Phone",
-    header: "Phone",
-    cell: ({ row }) => <div>{row.getValue("Phone")}</div>,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const driver = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(driver.DriverID)}
-            >
-              Copy Driver ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View Driver Details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
+import $api from "@/http";
+import { useNavigate } from "react-router-dom";
 
 export function DriverTable() {
   const [data, setData] = React.useState<Driver[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [progress, setProgress] = React.useState(0);
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const navigate = useNavigate();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const columns: ColumnDef<Driver>[] = [
+    {
+      // Assuming you want to create a column that shows vehicle status based on the HasVehicle boolean
+      id: "vehicleStatus", // Use a unique ID for this column
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Status
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const hasVehicle = row.original.HasVehicle; // Directly access HasVehicle from the row's original data
+        return (
+          <div className="ml-4">
+            {hasVehicle ? "Has Vehicle" : "No Vehicle"}
+          </div>
+        );
+      },
+    },
+    {
+      id: "fullName",
+      header: "Full Name",
+      accessorFn: (row) => `${row.Name} ${row.Surname}`,
+      cell: ({ getValue }) => {
+        const fullName = getValue() as string; // Cast the value to string
+        return <div className="capitalize">{fullName}</div>;
+      },
+    },
+    {
+      accessorKey: "Email",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Email
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="lowercase">{row.getValue("Email")}</div>
+      ),
+    },
+    {
+      accessorKey: "DrivingLicenseCode",
+      header: "License Code",
+      cell: ({ row }) => <div>{row.getValue("DrivingLicenseCode")}</div>,
+    },
+    {
+      accessorKey: "Phone",
+      header: "Phone",
+      cell: ({ row }) => <div>{row.getValue("Phone")}</div>,
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const driver = row.original;
 
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(driver.DriverID)}
+              >
+                Copy Driver ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem>
+                <Button
+                  onClick={() => {
+                    navigate(`/admin/driver/${driver.DriverID}`);
+                  }}
+                >
+                  View Driver Details
+                </Button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
   const [profileData, setProfileData] = React.useState<DriverProfileRega>({
     user: {
       email: "",
@@ -197,7 +168,7 @@ export function DriverTable() {
       drivingLicenseCode: "",
     },
   });
-  console.log(profileData);
+  // console.log(profileData);
   const table = useReactTable({
     data,
     columns,
@@ -222,27 +193,45 @@ export function DriverTable() {
   };
 
   React.useEffect(() => {
+    let isDataFetched = false;
     setIsLoading(true);
-    let timer: any;
+
+    // Function to fetch data
+    const fetchData = async () => {
+      try {
+        const response = await $api.get("/driver/drivers/");
+        console.log(response);
+        setData(response.data.drivers); // Assuming the response data is the array of drivers
+        isDataFetched = true;
+        if (progress >= 100) {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        isDataFetched = true;
+        if (progress >= 100) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchData();
 
     // Function to increment progress
     const incrementProgress = () => {
       setProgress((prevProgress) => {
         if (prevProgress >= 100) {
           clearInterval(timer);
-          setIsLoading(false);
-          // const response = await axios.get(
-          //   "https://your-api-endpoint.com/drivers"
-          // );
-          // setData(response.data); // Assuming the response data is the array of drivers
-          setData(dataX);
+          if (isDataFetched) {
+            setIsLoading(false);
+          }
           return 100;
         }
         return prevProgress + 10; // Increment by 10 every 200ms
       });
     };
 
-    timer = setInterval(incrementProgress, 200); // Update progress every 200ms
+    let timer = setInterval(incrementProgress, 200); // Update progress every 200ms
 
     return () => clearInterval(timer); // Cleanup interval on component unmount
   }, []);

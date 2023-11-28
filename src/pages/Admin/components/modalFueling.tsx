@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FuelingProfileRega } from "../types/types";
 import { useState } from "react";
+import $api from "@/http";
 
 interface ModalProps {
   content: string;
@@ -24,33 +25,38 @@ export function ModalFueling({
   setProfileData,
 }: ModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+
+    // Check if the name starts with 'user.' or 'fueling_person.'
     if (name.startsWith("user.")) {
+      const fieldName = name.substring("user.".length);
       setProfileData((prev) => ({
         ...prev,
         user: {
           ...prev.user,
-          [name.substring(5)]: value,
+          [fieldName]: value,
         },
       }));
     } else if (name.startsWith("fueling_person.")) {
+      const fieldName = name.substring("fueling_person.".length);
       setProfileData((prev) => ({
         ...prev,
         fueling_person: {
           ...prev.fueling_person,
-          [name.substring(14)]: value,
+          [fieldName]: value,
         },
       }));
     }
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // await axios.post("https://your-api-endpoint.com/drivers", profileData);
+      const response = await $api.post("/auth/register/fueling", profileData);
+      console.log(response);
 
       setTimeout(() => {
         setIsLoading(false);

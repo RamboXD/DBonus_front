@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { VehicleRega } from "../types/types";
+import $api from "@/http";
+import { format, parse } from "date-fns";
 
 // Vehicle Modal Component
 interface ModalVehicleProps {
@@ -54,17 +56,55 @@ export function ModalVehicle({
     e.preventDefault();
     setIsLoading(true);
 
-    try {
-      // await axios.post("https://your-api-endpoint.com/drivers", profileData);
+    // Prepare the data for submission
+    const submitData = {
+      ...vehicleData,
+      Year:
+        typeof vehicleData.Year === "string"
+          ? parseInt(vehicleData.Year)
+          : vehicleData.Year,
+      SeatingCapacity:
+        typeof vehicleData.SeatingCapacity === "string"
+          ? parseInt(vehicleData.SeatingCapacity)
+          : vehicleData.SeatingCapacity,
+      TotalDistanceCovered:
+        typeof vehicleData.TotalDistanceCovered === "string"
+          ? parseFloat(vehicleData.TotalDistanceCovered)
+          : vehicleData.TotalDistanceCovered,
+      FuelCapacity:
+        typeof vehicleData.FuelCapacity === "string"
+          ? parseFloat(vehicleData.FuelCapacity)
+          : vehicleData.FuelCapacity,
+      FuelConsumed:
+        typeof vehicleData.FuelConsumed === "string"
+          ? parseFloat(vehicleData.FuelConsumed)
+          : vehicleData.FuelConsumed,
+      LastMaintenanceCheck: vehicleData.LastMaintenanceCheck
+        ? format(
+            parse(
+              vehicleData.LastMaintenanceCheck,
+              "yyyy-MM-dd'T'HH:mm",
+              new Date()
+            ),
+            "yyyy-MM-dd'T'HH:mm:ss'Z'"
+          )
+        : "",
+    };
 
+    try {
+      const response = await $api.post("/vehicle/add", submitData);
+      console.log(response);
       setTimeout(() => {
         setIsLoading(false);
         window.location.reload();
       }, 2000);
+      // Rest of your submission logic...
     } catch (error) {
       setIsLoading(false);
       console.error("Error submitting data:", error);
     }
+
+    // Reset loading state and possibly handle the response
   };
   return (
     <Dialog>
@@ -133,18 +173,12 @@ export function ModalVehicle({
               value={vehicleData.FuelConsumed}
               onChange={handleInputChange}
             />
-            <Field
+            {/* <Field
               name="Photo"
               label="Photo URL"
               value={vehicleData.Photo}
               onChange={handleInputChange}
-            />
-            <Field
-              name="Status"
-              label="Status"
-              value={vehicleData.Status}
-              onChange={handleInputChange}
-            />
+            /> */}
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isLoading}>

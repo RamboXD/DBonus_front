@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DriverProfileRega } from "../types/types";
 import { useState } from "react";
-import axios from "axios";
+import $api from "@/http";
 
 interface ModalProps {
   content: string;
@@ -46,8 +46,8 @@ export function Modal({ content, profileData, setProfileData }: ModalProps) {
     setIsLoading(true);
 
     try {
-      // await axios.post("https://your-api-endpoint.com/drivers", profileData);
-
+      const response = await $api.post("/auth/register/driver", profileData);
+      console.log(response);
       setTimeout(() => {
         setIsLoading(false);
         window.location.reload();

@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MaintenanceProfileRega } from "../types/types";
+import $api from "@/http";
 
 // Maintenance Modal Component
 interface ModalMaintenanceProps {
@@ -54,7 +55,11 @@ export function ModalMaintenance({
     setIsLoading(true);
 
     try {
-      // await axios.post("https://your-api-endpoint.com/drivers", profileData);
+      const response = await $api.post(
+        "/auth/register/maintenance",
+        profileData
+      );
+      console.log(response);
 
       setTimeout(() => {
         setIsLoading(false);

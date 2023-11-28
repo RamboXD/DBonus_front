@@ -4,6 +4,7 @@ export type Driver = {
   Government: string;
   Name: string;
   Surname: string;
+  HasVehicle: boolean;
   MiddleName: string;
   Address: string;
   Phone: string;
@@ -31,6 +32,12 @@ export type DriverProfileRega = {
   driver: DriverRega;
 };
 type FuelingRega = {
+  Certification: string;
+  Name: string;
+  Surname: string;
+  MiddleName: string;
+};
+type FuelingRegaMini = {
   certification: string;
   name: string;
   surname: string;
@@ -39,7 +46,7 @@ type FuelingRega = {
 
 export type FuelingProfileRega = {
   user: UserRega;
-  fueling_person: FuelingRega;
+  fueling_person: FuelingRegaMini;
 };
 
 export type MaintenanceRega = {

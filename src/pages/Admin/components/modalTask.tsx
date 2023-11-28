@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TaskRega } from "../types/types";
+import $api from "@/http";
 
 interface ModalTaskProps {
   content: string;
@@ -24,17 +25,30 @@ export function ModalTask({ content, taskData, setTaskData }: ModalTaskProps) {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+    const parsedValue =
+      name === "distance" && value ? parseFloat(value) : value;
     setTaskData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: parsedValue,
     }));
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
+    // Prepare the data for submission
+    const submitData = {
+      ...taskData,
+      distance:
+        typeof taskData.distance === "string"
+          ? parseFloat(taskData.distance)
+          : taskData.distance,
+    };
+
     try {
-      // await axios.post("https://your-api-endpoint.com/drivers", profileData);
+      const response = await $api.post("/task/create", submitData);
+      console.log(response);
 
       setTimeout(() => {
         setIsLoading(false);
@@ -45,6 +59,7 @@ export function ModalTask({ content, taskData, setTaskData }: ModalTaskProps) {
       console.error("Error submitting data:", error);
     }
   };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -115,7 +130,7 @@ const Field: React.FC<{
       id={name}
       name={name}
       type={type}
-      value={value}
+      value={type === "number" ? value.toString() : (value as string)} // Convert number to string for number inputs
       onChange={onChange}
       className="col-span-3"
     />

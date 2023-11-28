@@ -39,6 +39,7 @@ import {
 import { ModalTask } from "@/pages/Admin/components/modalTask";
 import { TaskRega } from "@/pages/Admin/types/types";
 import { ProgressIndicator } from "@/pages/Admin/components/progressPage";
+import $api from "@/http";
 
 const dataX: Task[] = [
   {
@@ -247,31 +248,48 @@ export function TasksTable() {
   // }, []);
 
   React.useEffect(() => {
+    let isDataFetched = false;
     setIsLoading(true);
-    let timer: any;
+
+    // Function to fetch data
+    const fetchData = async () => {
+      try {
+        const response = await $api.get("/task/tasks/");
+        console.log(response);
+        setData(response.data.tasks); // Assuming the response data is the array of drivers
+        isDataFetched = true;
+        if (progress >= 100) {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        isDataFetched = true;
+        if (progress >= 100) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchData();
 
     // Function to increment progress
     const incrementProgress = () => {
       setProgress((prevProgress) => {
         if (prevProgress >= 100) {
           clearInterval(timer);
-          setIsLoading(false);
-          // const response = await axios.get(
-          //   "https://your-api-endpoint.com/drivers"
-          // );
-          // setData(response.data); // Assuming the response data is the array of drivers
-          setData(dataX);
+          if (isDataFetched) {
+            setIsLoading(false);
+          }
           return 100;
         }
         return prevProgress + 10; // Increment by 10 every 200ms
       });
     };
 
-    timer = setInterval(incrementProgress, 200); // Update progress every 200ms
+    let timer = setInterval(incrementProgress, 200); // Update progress every 200ms
 
     return () => clearInterval(timer); // Cleanup interval on component unmount
   }, []);
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
