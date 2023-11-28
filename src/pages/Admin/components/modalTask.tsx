@@ -86,15 +86,15 @@ export function ModalTask({ content, taskData, setTaskData }: ModalTaskProps) {
               onChange={handleInputChange}
             />
             <Field
-              name="where_from"
+              name="whereFrom"
               label="Where From"
-              value={taskData.where_from}
+              value={taskData.whereFrom}
               onChange={handleInputChange}
             />
             <Field
-              name="where_to"
+              name="whereTo"
               label="Where To"
-              value={taskData.where_to}
+              value={taskData.whereTo}
               onChange={handleInputChange}
             />
             <Field

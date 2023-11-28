@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { CaretSortIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -22,9 +18,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -52,80 +45,8 @@ export type Task = {
   Distance: number;
 };
 
-export const columns: ColumnDef<Task>[] = [
-  {
-    accessorKey: "Status",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Status
-        <CaretSortIcon className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      const statusValue = row.getValue("Status");
-      let displayValue = "";
-
-      switch (statusValue) {
-        case "not_assigned":
-          displayValue = "Not Assigned";
-          break;
-        case "in_progress":
-          displayValue = "In Progress";
-          break;
-        case "finished":
-          displayValue = "Finished";
-          break;
-      }
-
-      return <div className="m-4">{displayValue}</div>;
-    },
-  },
-  {
-    accessorKey: "Title",
-    header: "Title",
-    cell: ({ row }) => <div>{row.getValue("Title")}</div>,
-  },
-  {
-    accessorKey: "Description",
-    header: "Description",
-    cell: ({ row }) => <div>{row.getValue("Description")}</div>,
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const task = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(task.TaskID)}
-            >
-              Copy Task ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View Task Details</DropdownMenuItem>
-            <DropdownMenuItem>Update Status</DropdownMenuItem>
-            <DropdownMenuItem>Reassign Task</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
-
-export function TasksTable() {
+export function UnTasksTable() {
+  const [currentTask, setCurrentTask] = React.useState<any>(null);
   const [data, setData] = React.useState<Task[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [progress, setProgress] = React.useState(0);
@@ -144,6 +65,78 @@ export function TasksTable() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const columns: ColumnDef<Task>[] = [
+    {
+      accessorKey: "Status",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const statusValue = row.getValue("Status");
+        let displayValue = "";
+
+        switch (statusValue) {
+          case "not_assigned":
+            displayValue = "Not Assigned";
+            break;
+          case "in_progress":
+            displayValue = "In Progress";
+            break;
+          case "finished":
+            displayValue = "Finished";
+            break;
+        }
+
+        return <div className="m-4">{displayValue}</div>;
+      },
+    },
+    {
+      accessorKey: "Title",
+      header: "Title",
+      cell: ({ row }) => <div>{row.getValue("Title")}</div>,
+    },
+    {
+      accessorKey: "Description",
+      header: "Description",
+      cell: ({ row }) => <div>{row.getValue("Description")}</div>,
+    },
+    {
+      id: "assign",
+      header: "Assign",
+      cell: ({ row }) => {
+        return (
+          <Button
+            onClick={() => assignTask(row.original.TaskID)}
+            disabled={!!currentTask}
+          >
+            Assign to Me
+          </Button>
+        );
+      },
+    },
+  ];
+  const assignTask = async (taskId: string) => {
+    if (currentTask) {
+      console.log("A task is already assigned.");
+      return;
+    }
+
+    try {
+      const response = await $api.post(`/task/tasks/assign/${taskId}`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      console.log(response);
+    } catch (error) {
+      console.error("Error assigning task:", error);
+    }
+  };
   const table = useReactTable({
     data,
     columns,
@@ -196,9 +189,18 @@ export function TasksTable() {
     // Function to fetch data
     const fetchData = async () => {
       try {
-        const response = await $api.get("/task/tasks/");
+        const response = await $api.get("/task/tasks/unassigned");
         console.log(response);
         setData(response.data.tasks); // Assuming the response data is the array of drivers
+        const responseTask = await $api.get("/task/tasks/my-active");
+        console.log(responseTask);
+        if (responseTask.data && responseTask.data.status === "success") {
+          setCurrentTask(
+            responseTask.data.message === "No Active Task"
+              ? null
+              : responseTask.data.task[0]
+          );
+        }
         isDataFetched = true;
         if (progress >= 100) {
           setIsLoading(false);
@@ -239,8 +241,49 @@ export function TasksTable() {
       </div>
     );
   }
+  const finishTask = async (taskId: string) => {
+    try {
+      const response = await $api.post(`/task/tasks/finish/${taskId}`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      console.log(response);
+    } catch (error) {
+      console.error("Error finishing task:", error);
+    }
+  };
+  console.log(currentTask);
   return (
     <div className="w-full">
+      <div className="mb-4 p-4 bg-blue-500 rounded shadow-lg">
+        <h3 className="text-lg font-semibold text-white">Current Task:</h3>
+        {currentTask ? (
+          <div className="mt-4 bg-blue-600 p-3 rounded">
+            <p className="text-white text-sm">
+              Title: <span className="font-bold">{currentTask.Title}</span>
+            </p>
+            <p className="text-white text-sm mt-2">
+              Description:{" "}
+              <span className="font-bold">{currentTask.Description}</span>
+            </p>
+            <div className="mt-4">
+              <Button
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => finishTask(currentTask.TaskID)}
+              >
+                Finish
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-4 bg-blue-600 p-3 rounded">
+            <p className="text-white text-sm">
+              No task in process at the current moment.
+            </p>
+          </div>
+        )}
+      </div>
+
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter..."

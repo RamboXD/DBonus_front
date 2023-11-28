@@ -18,6 +18,7 @@ const Login: React.FC = () => {
       localStorage.setItem("role", result.data.role);
       dispatch(setAuth(true));
       if (result.data.role === "admin") navigate("/admin/drivers");
+      if (result.data.role === "driver") navigate("/driver/tasks");
     } catch (error) {
       console.log("ERROR");
     }

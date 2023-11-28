@@ -3,6 +3,8 @@ import { Drivers, Fuels, Maintenance, Tasks, Vehicles } from "@/pages/Admin";
 import Driver from "@/pages/Admin/Drivers/components/DriverTable/Driver";
 import FuelingPerson from "@/pages/Admin/Fuels/components/FuelingTable/Fueling";
 import MaintenancePerson from "@/pages/Admin/Maintenance/components/MaintenanceTable/MaintenancePerson";
+import { DriverProfile } from "@/pages/Driver/Profile/DriverProfile";
+import UnTasks from "@/pages/Driver/UnTasks/UnTasks";
 import Landing from "@/pages/Landing/Landing";
 import { IRoute, Role } from "@/ts/types";
 
@@ -67,6 +69,20 @@ export const routes: IRoute[] = [
     name: "Tasks",
     path: "/admin/tasks",
     component: <Tasks />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: false,
+  },
+  {
+    name: "UnassignedTasks",
+    path: "/driver/tasks",
+    component: <UnTasks />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: false,
+  },
+  {
+    name: "Tasks",
+    path: "/driver/me",
+    component: <DriverProfile />,
     roles: [Role.CLIENT, Role.ADMIN],
     isPublic: false,
   },

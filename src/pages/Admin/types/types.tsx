@@ -31,12 +31,12 @@ export type DriverProfileRega = {
   user: UserRega;
   driver: DriverRega;
 };
-type FuelingRega = {
-  Certification: string;
-  Name: string;
-  Surname: string;
-  MiddleName: string;
-};
+// type FuelingRega = {
+//   Certification: string;
+//   Name: string;
+//   Surname: string;
+//   MiddleName: string;
+// };
 type FuelingRegaMini = {
   certification: string;
   name: string;
@@ -65,8 +65,8 @@ export type MaintenanceProfileRega = {
 export type TaskRega = {
   title: string;
   description: string;
-  where_from: string;
-  where_to: string;
+  whereFrom: string;
+  whereTo: string;
   distance: number;
 };
 

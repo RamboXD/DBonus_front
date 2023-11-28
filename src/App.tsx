@@ -27,6 +27,9 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     if (role === "admin") {
       return <Navigate to="/admin/drivers" replace />;
     }
+    if (role === "driver") {
+      return <Navigate to="/driver/tasks" replace />;
+    }
 
     return <Navigate to="/" replace />;
   }
