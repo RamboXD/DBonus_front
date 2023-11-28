@@ -68,7 +68,7 @@ const Sidebar: React.FC = () => {
             </Link>
           </>
         )}
-        {role === "maintenance" && (
+        {role === "maintenance_person" && (
           <>
             <Link
               to="/maintenance/tasks"

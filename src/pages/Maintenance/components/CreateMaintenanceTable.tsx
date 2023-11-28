@@ -29,114 +29,210 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ModalTask } from "@/pages/Admin/components/modalTask";
-import { TaskRega } from "@/pages/Admin/types/types";
+import { ModalVehicle } from "@/pages/Admin/components/modalVehicle";
+import { VehicleRega } from "@/pages/Admin/types/types";
 import { ProgressIndicator } from "@/pages/Admin/components/progressPage";
 import $api from "@/http";
+import { ComboboxAssign } from "@/pages/Admin/components/comoboxAssign";
+import { jsPDF } from "jspdf";
 
-export type Task = {
-  TaskID: string;
+export type Vehicle = {
+  VehicleID: string;
+  Model: string;
+  Year: number;
+  LicensePlate: string;
+  SeatingCapacity: number;
   AssignedDriverID: string | null;
-  Title: string;
-  Description: string;
-  Status: "not_assigned" | "in_progress" | "finished";
-  WhereFrom: string;
-  WhereTo: string;
-  Distance: number;
+  LastMaintenanceCheck: string;
+  TotalDistanceCovered: number;
+  FuelCapacity: number;
+  FuelConsumed: number;
+  Photo: string;
+  Status: "Active" | "Inactive";
 };
 
-export function UnTasksTable() {
-  const [currentTask, setCurrentTask] = React.useState<any>(null);
-  const [data, setData] = React.useState<Task[]>([]);
+export function CreateMaintenanceTable() {
+  const [data, setData] = React.useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [progress, setProgress] = React.useState(0);
+  const [profileData, setProfileData] = React.useState<VehicleRega>({
+    Model: "",
+    Year: new Date().getFullYear(), // current year as default
+    LicensePlate: "",
+    SeatingCapacity: 0,
+    LastMaintenanceCheck: new Date().toISOString().split("T")[0], // current date in YYYY-MM-DD format
+    TotalDistanceCovered: 0.0,
+    FuelCapacity: 0.0,
+    FuelConsumed: 0.0,
+    Photo: "", // Placeholder URL
+    Status: "Inactive", // Default status
+  });
+  const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] =
+    React.useState(false);
+  const [selectedVehicle, setSelectedVehicle] = React.useState<any>(null);
+
+  const openMaintenanceModal = (vehicle: any) => {
+    setSelectedVehicle(vehicle);
+    setIsMaintenanceModalOpen(true);
+  };
+
+  const closeMaintenanceModal = () => {
+    setIsMaintenanceModalOpen(false);
+  };
+
+  const handleMaintenanceSubmit = (maintenanceData) => {
+    // API call to /maintenance/do with maintenanceData
+    closeMaintenanceModal();
+  };
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [driversWithoutVehicle, setDriversWithoutVehicle] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [profileData, setProfileData] = React.useState<TaskRega>({
-    title: "",
-    description: "",
-    whereFrom: "",
-    whereTo: "",
-    distance: 0,
-  });
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-
-  const columns: ColumnDef<Task>[] = [
+  const columns: ColumnDef<Vehicle>[] = [
     {
       accessorKey: "Status",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Status
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }) => {
-        const statusValue = row.getValue("Status");
-        let displayValue = "";
-
-        switch (statusValue) {
-          case "not_assigned":
-            displayValue = "Not Assigned";
-            break;
-          case "in_progress":
-            displayValue = "In Progress";
-            break;
-          case "finished":
-            displayValue = "Finished";
-            break;
-        }
-
-        return <div className="m-4">{displayValue}</div>;
-      },
-    },
-    {
-      accessorKey: "Title",
-      header: "Title",
-      cell: ({ row }) => <div>{row.getValue("Title")}</div>,
-    },
-    {
-      accessorKey: "Description",
-      header: "Description",
-      cell: ({ row }) => <div>{row.getValue("Description")}</div>,
-    },
-    {
-      id: "assign",
-      header: "Assign",
-      cell: ({ row }) => {
+      header: ({ column }) => {
         return (
           <Button
-            onClick={() => assignTask(row.original.TaskID)}
-            disabled={!!currentTask}
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Assign to Me
+            Status
+            <CaretSortIcon className="ml-2 h-4 w-4" />
           </Button>
         );
       },
+      cell: ({ row }) => <div className="ml-4">{row.getValue("Status")}</div>,
+    },
+    {
+      accessorKey: "Model",
+      header: "Model",
+      cell: ({ row }) => <div>{row.getValue("Model")}</div>,
+    },
+    {
+      accessorKey: "Year",
+      header: "Year",
+      cell: ({ row }) => <div>{row.getValue("Year")}</div>,
+    },
+    {
+      accessorKey: "LicensePlate",
+      header: "License Plate",
+      cell: ({ row }) => <div>{row.getValue("LicensePlate")}</div>,
+    },
+    {
+      accessorKey: "SeatingCapacity",
+      header: "Seating Capacity",
+      cell: ({ row }) => <div>{row.getValue("SeatingCapacity")}</div>,
+    },
+    {
+      id: "createMaintenance",
+      header: "Maintenance",
+      cell: ({ row }) => (
+        <Button onClick={() => openMaintenanceModal(row.original)}>
+          Create Maintenance Task
+        </Button>
+      ),
     },
   ];
-  const assignTask = async (taskId: string) => {
-    if (currentTask) {
-      console.log("A task is already assigned.");
-      return;
-    }
-
-    try {
-      const response = await $api.post(`/task/tasks/assign/${taskId}`);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-      console.log(response);
-    } catch (error) {
-      console.error("Error assigning task:", error);
-    }
+  type MaintenanceModalProps = {
+    isOpen: boolean;
+    onClose: () => void; // defining onClose as a function type
+    onSubmit: (maintenanceData: MaintenanceData) => void;
+    vehicleId: string;
   };
+
+  type MaintenanceData = {
+    VehicleID: string;
+    ServiceDate: string;
+    ServiceType: string;
+    Description: string;
+    Cost: number;
+    PartsReplaced: string;
+    ServiceReportImage: string;
+    OdometerReading: number;
+  };
+
+  function MaintenanceModal({
+    isOpen,
+    onClose,
+    onSubmit,
+    vehicleId,
+  }: MaintenanceModalProps) {
+    const [serviceDate, setServiceDate] = React.useState("");
+    const [serviceType, setServiceType] = React.useState("");
+    const [description, setDescription] = React.useState("");
+    const [cost, setCost] = React.useState("");
+    const [partsReplaced, setPartsReplaced] = React.useState("");
+    const [serviceReportImage, setServiceReportImage] = React.useState("");
+    const [odometerReading, setOdometerReading] = React.useState("");
+
+    const handleSubmit = () => {
+      const maintenanceData: MaintenanceData = {
+        VehicleID: vehicleId,
+        ServiceDate: serviceDate,
+        ServiceType: serviceType,
+        Description: description,
+        Cost: parseFloat(cost),
+        PartsReplaced: partsReplaced,
+        ServiceReportImage: serviceReportImage,
+        OdometerReading: parseInt(odometerReading, 10),
+      };
+      onSubmit(maintenanceData);
+    };
+    return (
+      isOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 className="text-xl mb-4 font-semibold text-gray-700">
+              Create Maintenance Task
+            </h3>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="serviceDate"
+                >
+                  Service Date
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="serviceDate"
+                  type="date"
+                  value={serviceDate}
+                  onChange={(e) => setServiceDate(e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                  Submit
+                </Button>
+                <Button
+                  onClick={onClose}
+                  className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+                >
+                  Close
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )
+    );
+  }
+
   const table = useReactTable({
     data,
     columns,
@@ -159,29 +255,6 @@ export function UnTasksTable() {
   const onGlobalFilterChange = (value: string) => {
     table.setGlobalFilter(value);
   };
-  // React.useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true);
-  //     setProgress(30); // Initial progress
-
-  //     try {
-  //       // const response = await axios.get(
-  //       //   "https://your-api-endpoint.com/drivers"
-  //       // );
-  //       // setData(response.data); // Assuming the response data is the array of drivers
-  //       setData(dataX);
-  //       setProgress(100); // Complete progress
-  //       setIsLoading(false);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //       setIsLoading(false); // Stop loading even if there is an error
-  //       setProgress(100); // Complete progress even in case of an error
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
   React.useEffect(() => {
     let isDataFetched = false;
     setIsLoading(true);
@@ -189,18 +262,12 @@ export function UnTasksTable() {
     // Function to fetch data
     const fetchData = async () => {
       try {
-        const response = await $api.get("/task/tasks/unassigned");
+        const response = await $api.get("/vehicle/vehicles");
         console.log(response);
-        setData(response.data.tasks); // Assuming the response data is the array of drivers
-        const responseTask = await $api.get("/task/tasks/my-active");
-        console.log(responseTask);
-        if (responseTask.data && responseTask.data.status === "success") {
-          setCurrentTask(
-            responseTask.data.message === "No Active Task"
-              ? null
-              : responseTask.data.task[0]
-          );
-        }
+        setData(response.data.vehicles); // Assuming the response data is the array of drivers
+        const responseDrivers = await $api.get("/driver/drivers/no_vehicle");
+        console.log(responseDrivers);
+        setDriversWithoutVehicle(responseDrivers.data.drivers);
         isDataFetched = true;
         if (progress >= 100) {
           setIsLoading(false);
@@ -234,6 +301,7 @@ export function UnTasksTable() {
 
     return () => clearInterval(timer); // Cleanup interval on component unmount
   }, []);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -241,49 +309,8 @@ export function UnTasksTable() {
       </div>
     );
   }
-  const finishTask = async (taskId: string) => {
-    try {
-      const response = await $api.post(`/task/tasks/finish/${taskId}`);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-      console.log(response);
-    } catch (error) {
-      console.error("Error finishing task:", error);
-    }
-  };
-  console.log(currentTask);
   return (
     <div className="w-full">
-      <div className="mb-4 p-4 bg-blue-500 rounded shadow-lg">
-        <h3 className="text-lg font-semibold text-white">Current Task:</h3>
-        {currentTask ? (
-          <div className="mt-4 bg-blue-600 p-3 rounded">
-            <p className="text-white text-sm">
-              Title: <span className="font-bold">{currentTask.Title}</span>
-            </p>
-            <p className="text-white text-sm mt-2">
-              Description:{" "}
-              <span className="font-bold">{currentTask.Description}</span>
-            </p>
-            <div className="mt-4">
-              <Button
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => finishTask(currentTask.TaskID)}
-              >
-                Finish
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-4 bg-blue-600 p-3 rounded">
-            <p className="text-white text-sm">
-              No task in process at the current moment.
-            </p>
-          </div>
-        )}
-      </div>
-
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter..."
@@ -291,10 +318,10 @@ export function UnTasksTable() {
           onChange={(event) => onGlobalFilterChange(event.target.value)}
           className="max-w-sm mr-5"
         />
-        <ModalTask
-          content={"Create Task"}
-          taskData={profileData}
-          setTaskData={setProfileData}
+        <ModalVehicle
+          content={"Create Vehicle"}
+          vehicleData={profileData}
+          setVehicleData={setProfileData}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -393,6 +420,12 @@ export function UnTasksTable() {
           </Button>
         </div>
       </div>
+      <MaintenanceModal
+        isOpen={isMaintenanceModalOpen}
+        onClose={closeMaintenanceModal}
+        onSubmit={handleMaintenanceSubmit}
+        vehicleId={selectedVehicle?.VehicleID}
+      />
     </div>
   );
 }

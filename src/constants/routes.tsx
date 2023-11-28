@@ -6,6 +6,8 @@ import MaintenancePerson from "@/pages/Admin/Maintenance/components/MaintenanceT
 import { DriverProfile } from "@/pages/Driver/Profile/DriverProfile";
 import UnTasks from "@/pages/Driver/UnTasks/UnTasks";
 import Landing from "@/pages/Landing/Landing";
+import CreateMaintenance from "@/pages/Maintenance/CreateMaintenance/CreateMaintenance";
+import { MaintenanceProfile } from "@/pages/Maintenance/Profile/MaintenanceProfile";
 import { IRoute, Role } from "@/ts/types";
 
 export const routes: IRoute[] = [
@@ -83,6 +85,20 @@ export const routes: IRoute[] = [
     name: "Tasks",
     path: "/driver/me",
     component: <DriverProfile />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: false,
+  },
+  {
+    name: "MaintenanceTasks",
+    path: "/maintenance/tasks",
+    component: <CreateMaintenance />,
+    roles: [Role.CLIENT, Role.ADMIN],
+    isPublic: false,
+  },
+  {
+    name: "MaintenanceInfo",
+    path: "/maintenance/me",
+    component: <MaintenanceProfile />,
     roles: [Role.CLIENT, Role.ADMIN],
     isPublic: false,
   },

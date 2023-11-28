@@ -3,7 +3,7 @@ import $api from "@/http";
 import { ProgressIndicator } from "@/pages/Admin/components/progressPage";
 import { useEffect, useState } from "react";
 
-export function DriverProfile() {
+export function MaintenanceProfile() {
   const [driverData, setDriverData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);

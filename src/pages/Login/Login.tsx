@@ -19,6 +19,8 @@ const Login: React.FC = () => {
       dispatch(setAuth(true));
       if (result.data.role === "admin") navigate("/admin/drivers");
       if (result.data.role === "driver") navigate("/driver/tasks");
+      if (result.data.role === "maintenance_person")
+        navigate("/maintenance/tasks");
     } catch (error) {
       console.log("ERROR");
     }
